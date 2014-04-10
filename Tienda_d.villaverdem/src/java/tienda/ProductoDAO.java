@@ -39,7 +39,18 @@ public class ProductoDAO {
     }
 
     public List<Producto> getProductosPrecio(String precioMin, String precioMax) {
-        return getProductosQuery("Precio >= " + precioMin +"AND precio <= " + precioMax);
+        if (precioMin=="" && precioMax==""){
+            return null;
+        }
+        else if(precioMin!="" && precioMax==""){
+            return getProductosQuery("Precio >= " + precioMin);
+        }
+        else if(precioMin=="" && precioMax!=""){
+            return getProductosQuery("Precio >= 0 AND precio <= " + precioMax);            
+        }
+        else{      
+            return getProductosQuery("Precio >= " + precioMin +"AND precio <= " + precioMax);
+        }
     }
     
     public List<Producto> getProductosCategoría(String categoria) {

@@ -1,5 +1,4 @@
 
-
 package tienda;
 
 import java.io.IOException;
@@ -15,32 +14,33 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 
-@WebServlet(name = "ServletProductos", urlPatterns = {"/ServletProductos"})
-public class ServletProductos extends HttpServlet {
-        
+@WebServlet(name = "ServletAgregarAlCarro", urlPatterns = {"/ServletAgregarAlCarro"})
+public class ServletAgregarAlCarro extends HttpServlet {
+    
     @Resource(lookup = "jdbc/tienda_dvillaverdem")
     private DataSource ds;
     private List<Producto> productosListados = new ArrayList<Producto>();
-    
-    
+
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {       
+            throws ServletException, IOException {
         
-         ProductoDAO prodDAO = new ProductoDAO(ds);
         
-         if ("precio".equals(request.getParameter("busqueda"))){
-             final String precioMinimo = request.getParameter("precioMin");
-             final String precioMaximo = request.getParameter("precioMax");
-             productosListados=prodDAO.getProductosPrecio(precioMinimo, precioMaximo);
-         }
-         else{
-             if("nombre".equals(request.getParameter("busqueda"))){
-                 final String nombreProducto = request.getParameter("nombreProd"); 
-                 productosListados=prodDAO.getProductosNombre(nombreProducto);
-             }
-         }         
-        request.getSession().setAttribute("lista", productosListados);
-        response.sendRedirect("index.jsp");  
+        productosListados=(ArrayList)request.getAttribute("listaEnviar");
+        
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ServletAgregarAlCarro</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ServletAgregarAlCarro at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

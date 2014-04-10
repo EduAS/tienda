@@ -13,6 +13,23 @@
 	margin-bottom:15px;
 }
 
+#cabecera{
+    padding:20px 0px 20px 0px;    
+    text-align:center;
+}
+
+#menuLogin{
+    height: 35px;
+    background-color: #e6e6e6;    
+}
+
+#menuLogin li{
+    float:left;
+    list-style: none;
+    padding:8px 36px 8px 16px;
+    height: 30px;
+} 
+
 
 #menu{
     border: 1px #cccccc solid;
@@ -24,9 +41,7 @@
 #menu li{
     float:left;
     list-style: none;
-    padding-left:16px;
-    padding-right:16px;
-    padding-top:5px;
+    padding:5px 16px 0px 16px;
     border-right: 2px solid #CACACA;
     height: 25px;
 }
@@ -39,7 +54,6 @@
     display: none;
     position: absolute;
     left: 0;
-    padding-left: 0; 
     margin-top: 6px;
 }
 
@@ -52,8 +66,17 @@
     float:none; 
     border:none;
     padding-bottom:5px;
+    background-color: #f0f2f8;
+}
+
+#muestraProductos{
+    padding: 15px 8px 15px 8px;
 }
 
 #muestraProductos img{
     width: 100px;
+}
+
+#muestraProductos td{
+    padding: 10px;
 }

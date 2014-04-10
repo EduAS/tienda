@@ -1,4 +1,6 @@
 package tienda;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 /**
@@ -48,6 +50,14 @@ public class Producto {
 
     public double getPrecio() {
         return precio;
+    }
+    
+    public String formateaPrecio(double precio){
+        String precioStr=precio+"";
+        BigDecimal bigDecimal = new BigDecimal(precioStr); 
+        BigDecimal precioRedondeado = bigDecimal.setScale(2, RoundingMode.HALF_UP);
+        String precioCorrecto = precioRedondeado+" €";       
+        return precioCorrecto;
     }
     
     
