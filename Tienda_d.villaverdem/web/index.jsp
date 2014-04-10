@@ -1,9 +1,6 @@
-<%-- 
-    Document   : index
-    Created on : 09-abr-2014, 13:53:33
-    Author     : Usuario
---%>
-
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="tienda.Producto"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -52,7 +49,34 @@
                 </ul>          
             </div>
 
-            <div id='listaProductos'>
+            <div id='muestraProductos'>
+            <% 
+            if (session.getAttribute("lista")!=null){
+              List<Producto> productosListados = new ArrayList<Producto>();
+              productosListados=(ArrayList)session.getAttribute("lista");
+            %>
+
+            <table>
+                <tr>
+                    <td><b>Producto</b></td>
+                    <td><b>Precio</b></td>
+                    <td><b>Categoría</b></td>
+                    <td><b>Imagen</b></td>
+                </tr>
+                <%
+                for (Producto prod : productosListados) {%>
+                <tr>
+                    <td><%= prod.getNombre() %></td>
+                    <td><%= prod.getPrecio() %></td>
+                    <td><%= prod.getCategoria() %></td>
+                    <td><img style="width: 100px;" src="<%= prod.getImagen()%>"/></td>
+                </tr>
+                <%
+                }%>
+            </table>
+            <%
+            session.setAttribute("lista", null); 
+            }else {%> nulo <%}%>        
 
             </div>
          </div>

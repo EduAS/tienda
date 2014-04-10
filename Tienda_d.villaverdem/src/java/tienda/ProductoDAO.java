@@ -35,7 +35,7 @@ public class ProductoDAO {
     }
 
     public List<Producto> getProductosNombre(String nombre) {
-        return getProductosQuery("Nombre LIKE '%" + nombre + "%'");
+        return getProductosQuery("upper(Nombre) LIKE upper('%" + nombre + "%')");
     }
 
     public List<Producto> getProductosPrecio(String precioMin, String precioMax) {
