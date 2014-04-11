@@ -20,63 +20,64 @@ import javax.sql.DataSource;
 
 @WebServlet(urlPatterns = {"/ServletLogin"})
 public class ServletLogin extends HttpServlet {
-    
+
     @Resource(lookup = "jdbc/tienda_dvillaverdem")
     private DataSource ds;
-    Connection conn;  
-
-
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
+        Connection conn;
+        Usuario admin = new Usuario();
         try {
             conn = ds.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error en la base de datos",e);
-        }
-        
-        Statement stm = null;
-        Usuario admin=new Usuario();
-        try {
-            stm = this.conn.createStatement();
-            String sql = "SELECT * FROM Administrador";
-            sql += " WHERE Usuario == " + request.getParameter("usuario") + "AND Contrasenia == " + request.getParameter("password");
-            ResultSet rs = stm.executeQuery(sql);
-            admin = crearAdminFromRS(rs);
-            rs.close();
+            Statement stm = null;
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al realizar la consulta",e);
-        } finally {
             try {
-                stm.close();
+                stm = conn.createStatement();
+                String sql = "SELECT * FROM Administrador";
+                sql += " WHERE Usuario = '" + request.getParameter("usuario") + "' AND Contrasenia = '" + request.getParameter("password") + "'";
+                ResultSet rs = stm.executeQuery(sql);
+                admin = crearAdminFromRS(rs);
             } catch (SQLException e) {
-                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
-                e.printStackTrace();
+                throw new RuntimeException("Error al realizar la consulta", e);
+            } finally {
+                try {
+                    stm.close();
+                } catch (SQLException e) {
+                    System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+
             }
-        }
-        
-        if (admin.getNombre()==""){
-            request.getSession().setAttribute("error", "Usuario o contraseña incorrecto");
-            response.sendRedirect("login.jsp");  
-        }
-        else{
-            request.getSession().setAttribute("usuario",admin.getUsuario());
-            response.sendRedirect("paginaAdministración.jsp");  
-        }
-        
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    System.err.println("Error al cerrar la conexión: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
 
-        
-        
+        } catch (SQLException e) {
+            throw new RuntimeException("Error en la base de datos", e);
+        }
 
+        if (admin.getNombre() == "" | admin.getNombre() == null) {
+            String error = "Usuario o contraseña incorrecto";
+            request.getSession().setAttribute("error", error);
+            response.sendRedirect("login.jsp");
+        } else {
+            request.getSession().setAttribute("usuario", admin.getUsuario());
+            response.sendRedirect("paginaAdministracion.jsp");
+        }
     }
-    
+
     private Usuario crearAdminFromRS(ResultSet rs) throws SQLException {
         Usuario admin = new Usuario();
         while (rs.next()) {
             admin.setUsuario(rs.getString("Usuario"));
-            admin.setContraseña(rs.getString("Contraseña"));
+            admin.setContraseña(rs.getString("Contrasenia"));
             admin.setNombre(rs.getString("Nombre"));
         }
         return admin;

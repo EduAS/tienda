@@ -48,3 +48,7 @@ function validar_camposLogin(){
 
     document.formLog.submit();
 }
+
+function loginIncorrecto(error){
+    alert(error);
+}

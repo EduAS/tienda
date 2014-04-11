@@ -27,7 +27,7 @@ public class ServletProductos extends HttpServlet {
             throws ServletException, IOException {       
         
          ProductoDAO prodDAO = new ProductoDAO(ds);
-        
+        try{
          if ("precio".equals(request.getParameter("busqueda"))){
              final String precioMinimo = request.getParameter("precioMin");
              final String precioMaximo = request.getParameter("precioMax");
@@ -38,7 +38,12 @@ public class ServletProductos extends HttpServlet {
                  final String nombreProducto = request.getParameter("nombreProd"); 
                  productosListados=prodDAO.getProductosNombre(nombreProducto);
              }
-         }         
+         }  
+         
+        }
+        finally{
+            prodDAO.close();
+        }
         request.getSession().setAttribute("lista", productosListados);
         response.sendRedirect("index.jsp");  
     }

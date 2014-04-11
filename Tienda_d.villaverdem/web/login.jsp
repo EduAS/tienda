@@ -1,4 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,18 +15,18 @@
                 <tr>
                     <td colspan="2" align="center"><h3>Iniciar sesi&oacute;n</h3></td>
                 </tr>
-                
+
                 <tr>
                     <td>Usuario</td>
                     <td>
-                        <input type="text" name="usuario" id="usuario" maxlength="20">
+                        <input type="text" name="usuario" maxlength="20">
                     </td>
                 </tr>
 
                 <tr>
                     <td>Password</td>
                     <td>
-                        <input type="password" name="password" id="password"  maxlength="15">
+                        <input type="password" name="password" maxlength="15">
                     </td>
                 </tr>
 
@@ -35,5 +38,13 @@
                 </tr>
             </table>
         </form>
+
+        
+        <c:if test="<%= session.getAttribute("error")!=null%>">   
+            <script>alert('<%= session.getAttribute("error")%>');</script>
+            <% session.setAttribute("error", null);%>
+        </c:if>
+
+
     </body>
 </html>
