@@ -1,4 +1,3 @@
-
 package tienda;
 
 import java.io.IOException;

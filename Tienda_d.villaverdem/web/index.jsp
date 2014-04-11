@@ -74,9 +74,7 @@
                     mostrando la lista buscada. También para agregar
                     el producto
                     */
-                    request.setAttribute("listaEnviar", productosListados);
-                    RequestDispatcher rd = request.getRequestDispatcher("servletUrlPattern");
-                    rd.forward(request, response);
+                    request.getSession().setAttribute("listaEnviar", productosListados);
                   %>
 
 

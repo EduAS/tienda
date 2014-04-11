@@ -6,10 +6,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 
 
-/**
- *
- * @author Edu y Dani
- */
+
 public class ProductoDAO {
     
   private Connection conn;
