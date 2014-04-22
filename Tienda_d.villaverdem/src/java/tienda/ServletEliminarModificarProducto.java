@@ -1,51 +1,30 @@
 package tienda;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import javax.annotation.Resource;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-@WebServlet(name = "ServletProductos", urlPatterns = {"/ServletProductos"})
-public class ServletProductos extends HttpServlet {
-
-    @Resource(lookup = "jdbc/tienda_dvillaverdem")
-    private DataSource ds;
-    private ArrayList<Producto> productosListados = new ArrayList<Producto>();
+@WebServlet(name = "ServletEliminarModificarProducto", urlPatterns = {"/ServletEliminarModificarProducto"})
+public class ServletEliminarModificarProducto extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        ProductoDAO prodDAO = new ProductoDAO(ds);
-        try {
-            if ("precio".equals(request.getParameter("busqueda"))) {
-                String precioMinimo = request.getParameter("precioMin");
-                String precioMaximo = request.getParameter("precioMax");
-                productosListados = prodDAO.getProductosPrecio(precioMinimo, precioMaximo);
-            } else {
-                if ("nombre".equals(request.getParameter("busqueda"))) {
-                    String nombreProducto = request.getParameter("nombreProd");
-                    productosListados = prodDAO.getProductosNombre(nombreProducto);
-                } else {
-                    if ("categoria".equals(request.getParameter("busqueda"))) {
-                        String categ = request.getParameter("cat");
-                        productosListados = prodDAO.getProductosCategoría(categ);
-                    }
-                }
-            }
-
-        } finally {
-            prodDAO.close();
-        }
-        request.getSession().setAttribute("lista", productosListados);
-        if ("si".equals(request.getParameter("esAdmin"))){
-            response.sendRedirect("paginaAdministracion.jsp");
-        } else {
-            response.sendRedirect("index.jsp");
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ServletEliminarModificarProducto</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ServletEliminarModificarProducto at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 

@@ -2,9 +2,11 @@ package tienda;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Integer.parseInt;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,45 +15,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-@WebServlet(name = "ServletAgregarAlCarro", urlPatterns = {"/ServletAgregarAlCarro"})
-public class ServletAgregarAlCarro extends HttpServlet {
+@WebServlet(name = "ServletGuardarPedido", urlPatterns = {"/ServletGuardarPedido"})
+public class ServletGuardarPedido extends HttpServlet {
 
-    private ArrayList<Producto> productosListados = new ArrayList<Producto>();
+    @Resource(lookup = "jdbc/tienda_dvillaverdem")
+    private DataSource ds;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        productosListados = (ArrayList) request.getSession().getAttribute("listaBusqueda");
-        ArrayList<CantidadProducto> carroCompra = new ArrayList<>();
-        if (request.getSession().getAttribute("carro") != null) {
-            carroCompra = (ArrayList) request.getSession().getAttribute("carro");
-        }
-
-        if (!"0".equals(request.getParameter("cantidad"))) {
-            int posicion = parseInt(request.getParameter("posicion"));
-            String nombre = productosListados.get(posicion).getNombre();
-            int cantidad = parseInt(request.getParameter("cantidad"));
-            int i = 0;
-            boolean encontrado = false;
-            while (i < carroCompra.size() && !encontrado) {
-                if (carroCompra.get(i).getNombre().equals(nombre)) {
-                    encontrado = true;
-                } else {
-                    i++;
-                }
+        ArrayList<CantidadProducto> carroCompra = (ArrayList) request.getSession().getAttribute("carro");
+        String nombreCliente = request.getParameter("nombreCliente");
+        String numPedido = request.getSession().getId();
+        ProductoDAO prodDAO = new ProductoDAO(ds);
+        try {
+            prodDAO.crearPedido(nombreCliente, numPedido);
+            for (CantidadProducto prod : carroCompra) {
+                int cantidad = prod.getCantidad();
+                String nombreProd = prod.getNombre();
+                prodDAO.crearRegistroPedidos(numPedido, nombreProd, cantidad);
             }
-            if (encontrado) {
-                int cantidadanterior = carroCompra.get(i).getCantidad();
-                carroCompra.get(i).setCantidad(cantidadanterior + cantidad);
-            } else {
-                String categoria = productosListados.get(posicion).getCategoria();
-                double precio = productosListados.get(posicion).getPrecio();
-                String imagen = productosListados.get(posicion).getImagen();
-                carroCompra.add(new CantidadProducto(cantidad, nombre, categoria, imagen, precio));
-            }
+            request.getSession().setAttribute("carro", null);
+            request.getSession().invalidate();
+            String confirmacion="Su pedido ha sido guardado";
+            request.getSession().setAttribute("confirmacion",confirmacion);
+
+        } finally {
+            prodDAO.close();
         }
-        request.getSession().setAttribute("carro", carroCompra);
-        request.getSession().setAttribute("lista", productosListados);
+        
+
         response.sendRedirect("index.jsp");
     }
 

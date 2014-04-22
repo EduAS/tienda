@@ -1,3 +1,4 @@
+<%@page import="tienda.CantidadProducto"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
@@ -15,28 +16,37 @@
         <script src="funciones.js"></script>
     </head>
     <body>
+        <%
+            if (request.getSession().isNew()) {
+                request.getSession().setMaxInactiveInterval(1800);
+            }
+
+        %>
+        <c:if test="<%= request.getSession().getAttribute("confirmacion") != null%>">
+            <script>alert("<%=request.getSession().getAttribute("confirmacion")%>");</script>
+            <% request.getSession().setAttribute("confirmacion", null); %>
+            
+        </c:if>
+
+        
         <div id="contenedor">
             <div id='cabecera'>
                 En 'ca' Paqui
             </div>
-            
-            <div id='menuLogin'>
-                <ul>
-                    <li>
-                        <a href="login.jsp">Identificarse</a>
-                    </li>
-                </ul>
+
+            <div id='menuBasico'>
+                <a href="login.jsp">Identificarse</a>
             </div>
-            
-            
+
+
             <div id='menu'>
                 <ul>
                     <li id='categorias'>Categorías
                         <ul>
-                            <li>Alimentación</li>
-                            <li>Droguería</li>
-                            <li>Prensa</li>
-                            <li>Ferretería</li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Alimen">Alimentación</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Drog">Droguería</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Pren">Prensa</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Ferr">Ferretería</a></li>
                         </ul>                    
                     </li>
 
@@ -63,61 +73,93 @@
                 </ul>          
             </div>
 
-            <div id='muestraProductos'>
-              <c:choose>  
-                <c:when test="<%= session.getAttribute("lista")!=null %>">
-                  <%
-                    List<Producto> productosListados = new ArrayList<Producto>();
-                    productosListados=(ArrayList)session.getAttribute("lista");
-                    
-                    /*Se envía la lista buscada en una variable
-                    para cuando se añada el producto, la página siga
-                    mostrando la lista buscada. También para agregar
-                    el producto
-                    */
-                    request.getSession().setAttribute("listaEnviar", productosListados);
-                  %>
+            <div id="carritoCompra">
+                <ul>
+                    <li>
+                        <img src="recursos/imagenes/carrito.jpg"/>
+                    </li>
 
+                    <li>
+                        <c:choose>  
+                            <c:when test="<%= session.getAttribute("carro") != null%>">
+                                <%
+                                    ArrayList<CantidadProducto> carro = (ArrayList) session.getAttribute("carro");
+                                    int total = 0;
+                                    for (CantidadProducto prod : carro) {
+                                        total += prod.getCantidad();
+                                    }
+                                %>
+                                (<c:out value="<%=total%>"/>)
+                            </c:when>
+                            <c:otherwise>
+                                (0)
+                            </c:otherwise>
+                        </c:choose>
+                    </li>
 
-                <table>
-                    <tr>
-                        <td><b>Producto</b></td>
-                        <td><b>Precio</b></td>
-                        <td><b>Categoría</b></td>
-                        <td><b>Imagen</b></td>
-                        <td><b>Cantidad</b></td>
-                    </tr>
-                                       
-                    
-                    <c:forEach var="prod" items="<%=productosListados%>" varStatus="status">
-                         <tr>
-                            <td><c:out value="${prod.getNombre()}"/></td>
-                            <td><c:out value="${prod.formateaPrecio(prod.getPrecio())}"/></td>
-                            <td><c:out value="${prod.getCategoria()}"/></td>
-                            <td><img src="<c:out value="${prod.getImagen()}"/>"/></td>
-                            <td>
-                                <form method="get" action="ServletAgregarAlCarro">
-                                    <label>Cantidad</label>
-                                    <input type="number" size="5" min="0" name="cantidad" value="0" onkeypress="validarCantidad()" />
-                                    <input type='submit' name='comprarProducto' value='Añadir'>
-                                </form>
-                            </td>   
-                         </tr>
-                         
-                         
-                     </c:forEach>
-                    
-                </table>
-                    
-                
-                <% session.setAttribute("lista", null); %>
-                </c:when>
-                <c:otherwise>
-                    Busque los productos por categoría, nombre o precio en el menú superior                    
-                </c:otherwise>   
-              </c:choose>
+                    <li>
+                        <a href="VerCarrito.jsp">Ver carrito</a>
+                    </li>
+                </ul>
 
             </div>
-         </div>
+
+            <div id='muestraProductos'>
+                <c:choose>  
+                    <c:when test="<%= session.getAttribute("lista") != null%>">
+                        <%
+                            ArrayList<Producto> productosListados = new ArrayList<Producto>();
+                            productosListados = (ArrayList) request.getSession().getAttribute("lista");
+
+                            /*Se envía la lista buscada en una variable
+                             para que cuando se añada el producto, la página siga
+                             mostrando la lista buscada. También para agregar
+                             el producto.
+                             */
+                            request.getSession().setAttribute("listaBusqueda", productosListados);
+                        %>
+
+
+                        <table>
+                            <tr>
+                                <td><b>Producto</b></td>
+                                <td><b>Precio</b></td>
+                                <td><b>Categoría</b></td>
+                                <td><b>Imagen</b></td>
+                                <td><b>Cantidad</b></td>
+                            </tr>
+
+
+                            <c:forEach var="prod" items="<%=productosListados%>" varStatus="status">
+                                <tr>
+                                    <td><c:out value="${prod.getNombre()}"/></td>
+                                    <td><c:out value="${prod.formateaPrecio(prod.getPrecio())}"/></td>
+                                    <td><c:out value="${prod.getCategoria()}"/></td>
+                                    <td><img src="<c:out value="${prod.getImagen()}"/>"/></td>
+                                    <td>
+                                        <form method="get" action="ServletAgregarAlCarro">
+                                            <label>Cantidad</label>
+                                            <input type="number" size="5" min="0" name="cantidad" value="0" onkeypress="validarCantidad()" />
+                                            <input type="hidden" name="posicion" value="${status.index}"/>
+                                            <input type="submit" name="comprarProducto" value="Añadir">
+                                        </form>
+                                    </td>   
+                                </tr>
+
+
+                            </c:forEach>
+
+                        </table>
+
+
+                        <% request.getSession().setAttribute("lista", null);%>
+                    </c:when>
+                    <c:otherwise>
+                        Busque los productos por categoría, nombre o precio en el menú superior                    
+                    </c:otherwise>   
+                </c:choose>
+
+            </div>
+        </div>
     </body>
 </html>

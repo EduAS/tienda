@@ -4,55 +4,33 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-@WebServlet(name = "ServletAgregarAlCarro", urlPatterns = {"/ServletAgregarAlCarro"})
-public class ServletAgregarAlCarro extends HttpServlet {
-
-    private ArrayList<Producto> productosListados = new ArrayList<Producto>();
+@WebServlet(name = "ServletEliminarProducto", urlPatterns = {"/ServletEliminarProducto"})
+public class ServletEliminarProducto extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        productosListados = (ArrayList) request.getSession().getAttribute("listaBusqueda");
-        ArrayList<CantidadProducto> carroCompra = new ArrayList<>();
-        if (request.getSession().getAttribute("carro") != null) {
-            carroCompra = (ArrayList) request.getSession().getAttribute("carro");
-        }
-
-        if (!"0".equals(request.getParameter("cantidad"))) {
+        ArrayList<CantidadProducto> carroCompra = (ArrayList) request.getSession().getAttribute("carro");
+        if ("uno".equals(request.getParameter("eliminar"))) {
+            int cantidadQuitada = parseInt(request.getParameter("cantidad"));
             int posicion = parseInt(request.getParameter("posicion"));
-            String nombre = productosListados.get(posicion).getNombre();
-            int cantidad = parseInt(request.getParameter("cantidad"));
-            int i = 0;
-            boolean encontrado = false;
-            while (i < carroCompra.size() && !encontrado) {
-                if (carroCompra.get(i).getNombre().equals(nombre)) {
-                    encontrado = true;
-                } else {
-                    i++;
-                }
-            }
-            if (encontrado) {
-                int cantidadanterior = carroCompra.get(i).getCantidad();
-                carroCompra.get(i).setCantidad(cantidadanterior + cantidad);
-            } else {
-                String categoria = productosListados.get(posicion).getCategoria();
-                double precio = productosListados.get(posicion).getPrecio();
-                String imagen = productosListados.get(posicion).getImagen();
-                carroCompra.add(new CantidadProducto(cantidad, nombre, categoria, imagen, precio));
+            int cantidadActual = carroCompra.get(posicion).getCantidad();
+            int cantidadNueva = cantidadActual - cantidadQuitada;
+            carroCompra.get(posicion).setCantidad(cantidadNueva);
+        }
+        else{
+            if("todos".equals(request.getParameter("eliminar"))){
+                carroCompra= new ArrayList<CantidadProducto>();
             }
         }
         request.getSession().setAttribute("carro", carroCompra);
-        request.getSession().setAttribute("lista", productosListados);
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("VerCarrito.jsp");
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -1,22 +1,19 @@
 package tienda;
 
 import java.util.ArrayList;
-import java.util.List;
 import javax.sql.DataSource;
 import java.sql.*;
 
-
-
 public class ProductoDAO {
-    
-  private Connection conn;
+
+    private Connection conn;
 
     public ProductoDAO(DataSource ds) {
         try {
             conn = ds.getConnection();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error en la base de datos",e);
+            throw new RuntimeException("Error en la base de datos", e);
         }
     }
 
@@ -31,36 +28,117 @@ public class ProductoDAO {
         }
     }
 
-    public List<Producto> getProductosNombre(String nombre) {
+    public ArrayList<Producto> getProductosNombre(String nombre) {
         return getProductosQuery("upper(Nombre) LIKE upper('%" + nombre + "%')");
     }
 
-    public List<Producto> getProductosPrecio(String precioMin, String precioMax) {
-        if (precioMin=="" && precioMax==""){
+    public ArrayList<Producto> getProductosPrecio(String precioMin, String precioMax) {
+        if (precioMin == "" && precioMax == "") {
             return null;
-        }
-        else if(precioMin!="" && precioMax==""){
+        } else if (precioMin != "" && precioMax == "") {
             return getProductosQuery("Precio >= " + precioMin);
+        } else if (precioMin == "" && precioMax != "") {
+            return getProductosQuery("Precio >= 0 AND precio <= " + precioMax);
+        } else {
+            return getProductosQuery("Precio >= " + precioMin + "AND precio <= " + precioMax);
         }
-        else if(precioMin=="" && precioMax!=""){
-            return getProductosQuery("Precio >= 0 AND precio <= " + precioMax);            
-        }
-        else{      
-            return getProductosQuery("Precio >= " + precioMin +"AND precio <= " + precioMax);
-        }
-    }
-    
-    public List<Producto> getProductosCategoría(String categoria) {
-        return getProductosQuery("Categoria = " + categoria);
     }
 
-    public List<Producto> getTodosProductos() {
+    public ArrayList<Producto> getProductosCategoría(String categoria) {
+        return getProductosQuery("upper(Categoria) LIKE upper('" + categoria + "%')");
+    }
+
+    public ArrayList<Producto> getTodosProductos() {
         return getProductosQuery(null);
     }
 
-    private List<Producto> getProductosQuery(String where) {
+    public ArrayList<CantidadProducto> getProductosPedido(String numero) {
+        return getProductosPedidoQuery("Pedido = '" + numero + "'");
+    }
 
-        List<Producto> productos = new ArrayList<Producto>();
+    public void crearPedido(String nombreCliente, String numPedido) {
+        Statement stm = null;
+        try {
+            stm = this.conn.createStatement();
+            String sql = "INSERT INTO PEDIDO VALUES('" + numPedido + "','" + nombreCliente + "',false)";
+            stm.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void crearRegistroPedidos(String numPedido, String nombreProd, int cantidad) {
+        Statement stm = null;
+        try {
+            stm = this.conn.createStatement();
+            String sql = "INSERT INTO REGISTRO_PEDIDOS VALUES('" + numPedido + "','" + nombreProd + "'," + cantidad + ")";
+            stm.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public ArrayList<Pedido> getPedido(String where) {
+        ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
+        Statement stm = null; 
+        try {
+            stm = this.conn.createStatement();
+            String sql = "SELECT * FROM Pedido " + where;
+            ResultSet rs = stm.executeQuery(sql);
+            pedidos = crearPedidoListFromRS(rs);
+            rs.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+        return pedidos;
+
+    }
+
+    public void prepararPedido(String numPedido) {
+        Statement stm = null;
+        try {
+            stm = this.conn.createStatement();
+            String sql = "UPDATE PEDIDO SET Listo=true WHERE Numero='" + numPedido + "'";
+            stm.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private ArrayList<Producto> getProductosQuery(String where) {
+
+        ArrayList<Producto> productos = new ArrayList<Producto>();
         Statement stm = null;
         try {
             stm = this.conn.createStatement();
@@ -74,7 +152,7 @@ public class ProductoDAO {
             rs.close();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al realizar la consulta",e);
+            throw new RuntimeException("Error al realizar la consulta", e);
         } finally {
             try {
                 stm.close();
@@ -86,10 +164,36 @@ public class ProductoDAO {
         return productos;
     }
 
+    private ArrayList<CantidadProducto> getProductosPedidoQuery(String where) {
 
+        ArrayList<CantidadProducto> productos = new ArrayList<CantidadProducto>();
+        Statement stm = null;
+        try {
+            stm = this.conn.createStatement();
+            String sql = "SELECT * FROM Registro_Pedidos";
+            if (where != null) {
+                sql += " WHERE " + where;
+            }
 
-    private List<Producto> crearProductoListFromRS(ResultSet rs) throws SQLException {
-        List<Producto> productos = new ArrayList<Producto>();
+            ResultSet rs = stm.executeQuery(sql);
+            productos = crearCantidadProductoListFromRS(rs);
+            rs.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+        return productos;
+    }
+
+    private ArrayList<Producto> crearProductoListFromRS(ResultSet rs) throws SQLException {
+        ArrayList<Producto> productos = new ArrayList<Producto>();
         while (rs.next()) {
             String nombreProducto = rs.getString("Nombre");
             String categoriaProducto = rs.getString("Categoria");
@@ -98,5 +202,27 @@ public class ProductoDAO {
             productos.add(new Producto(nombreProducto, categoriaProducto, imagenProducto, precioProducto));
         }
         return productos;
+    }
+
+    private ArrayList<CantidadProducto> crearCantidadProductoListFromRS(ResultSet rs) throws SQLException {
+        ArrayList<CantidadProducto> productos = new ArrayList<CantidadProducto>();
+        while (rs.next()) {
+            String producto = rs.getString("Producto");
+            int cantidad = rs.getInt("Cantidad");
+            productos.add(new CantidadProducto(producto, cantidad));
+        }
+        return productos;
+    }
+
+    private ArrayList<Pedido> crearPedidoListFromRS(ResultSet rs) throws SQLException {
+        ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
+        while (rs.next()) {
+            String numero = rs.getString("Numero");
+            String usuario = rs.getString("Usuario");
+            boolean listo = rs.getBoolean("Listo");
+            ArrayList<CantidadProducto> listaProd = getProductosPedido(numero);
+            pedidos.add(new Pedido(numero, usuario, listo, listaProd));
+        }
+        return pedidos;
     }
 }

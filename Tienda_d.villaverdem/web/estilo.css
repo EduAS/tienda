@@ -4,13 +4,13 @@
 }
 
 #contenedor{
-	width:1000px;
-	position:absolute;
-	margin-left:-500px;
-	left:50%;
-	border:1px solid #999;
-	margin-top:15px;
-	margin-bottom:15px;
+    width:1000px;
+    position:absolute;
+    margin-left:-500px;
+    left:50%;
+    border:1px solid #999;
+    margin-top:15px;
+    margin-bottom:15px;
 }
 
 #cabecera{
@@ -18,17 +18,11 @@
     text-align:center;
 }
 
-#menuLogin{
-    height: 35px;
-    background-color: #e6e6e6;    
+#menuBasico{
+    height: 34px;
+    background-color: #e6e6e6;
+    padding: 17px 36px 0px 16px;
 }
-
-#menuLogin li{
-    float:left;
-    list-style: none;
-    padding:8px 36px 8px 16px;
-    height: 30px;
-} 
 
 
 #menu{
@@ -60,13 +54,29 @@
 #categorias:hover > ul{
     display:block;  
     border: 1px #666666 solid;
-    }
+}
 
 #categorias ul li{
     float:none; 
     border:none;
     padding-bottom:5px;
     background-color: #f0f2f8;
+}
+
+#carritoCompra{
+    height: 34px;
+    padding: 17px 36px 0px 16px;
+    background-color: #e6e6e6;
+}
+
+#carritoCompra li{
+    float:left;
+    list-style: none;
+    padding-right: 6px;
+}
+
+#carritoCompra img{
+    width: 20px;
 }
 
 #muestraProductos{
@@ -79,4 +89,44 @@
 
 #muestraProductos td{
     padding: 10px;
+}
+
+#confirmarPedido{
+    padding:8px 0px 8px 0px;
+}
+
+#confirmarPedido h2{
+    padding-bottom: 8px;
+}
+
+#pedidos{
+    padding:10px;
+}
+
+#pedidos a{
+    text-decoration: none;
+    background-color: #cedddf;
+    border:2px #666666 solid;
+    padding:4px;
+}
+
+#pedidos a:hover{
+    background-color: #7798ab;
+    border:3px #272727 solid;
+}
+
+#pedidos table{
+    border-collapse: collapse;
+}
+
+#pedidos td{
+    padding: 16px;
+}
+
+#pedidos tr{
+    border: 2px #999 solid;
+}
+
+#divPedidosSinPreparar{
+    padding:20px 0px 20px 100px;  
 }

@@ -69,6 +69,7 @@ public class ServletLogin extends HttpServlet {
             response.sendRedirect("login.jsp");
         } else {
             request.getSession().setAttribute("usuario", admin.getUsuario());
+            request.getSession().setMaxInactiveInterval(1800);
             response.sendRedirect("paginaAdministracion.jsp");
         }
     }
