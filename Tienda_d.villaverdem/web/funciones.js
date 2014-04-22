@@ -55,14 +55,14 @@ function validarUsuario(precio) {
         document.pedir.nombreCliente.focus();
         return false;
     }
-    precio=Math.round(precio*100)/100;
-    if (confirm("El importe total es de "+ precio + " euros, ¿desea continuar?")){
-      document.formLog.submit();  
+    precio = Math.round(precio * 100) / 100;
+    if (confirm("El importe total es de " + precio + " euros, ¿desea continuar?")) {
+        document.formLog.submit();
     }
-    else{
+    else {
         return false;
     }
-    
+
 }
 
 function loginIncorrecto(error) {
@@ -76,3 +76,5 @@ function confirmar(msg)
     else
         return false;
 }
+
+

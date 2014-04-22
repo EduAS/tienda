@@ -1,15 +1,10 @@
 package tienda;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,50 +22,57 @@ public class ServletLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Connection conn;
-        Usuario admin = new Usuario();
-        try {
-            conn = ds.getConnection();
-            Statement stm = null;
-
+        if ("true".equals(request.getParameter("login"))) {
+            Connection conn;
+            Usuario admin = new Usuario();
             try {
-                stm = conn.createStatement();
-                String sql = "SELECT * FROM Administrador";
-                sql += " WHERE Usuario = '" + request.getParameter("usuario") + "' AND Contrasenia = '" + request.getParameter("password") + "'";
-                ResultSet rs = stm.executeQuery(sql);
-                admin = crearAdminFromRS(rs);
+                conn = ds.getConnection();
+                Statement stm = null;
+
+                try {
+                    stm = conn.createStatement();
+                    String sql = "SELECT * FROM Administrador";
+                    sql += " WHERE Usuario = '" + request.getParameter("usuario") + "' AND Contrasenia = '" + request.getParameter("password") + "'";
+                    ResultSet rs = stm.executeQuery(sql);
+                    admin = crearAdminFromRS(rs);
+                } catch (SQLException e) {
+                    throw new RuntimeException("Error al realizar la consulta", e);
+                } finally {
+                    try {
+                        stm.close();
+                    } catch (SQLException e) {
+                        System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+                }
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        System.err.println("Error al cerrar la conexión: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+
             } catch (SQLException e) {
-                throw new RuntimeException("Error al realizar la consulta", e);
-            } finally {
-                try {
-                    stm.close();
-                } catch (SQLException e) {
-                    System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    System.err.println("Error al cerrar la conexión: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                throw new RuntimeException("Error en la base de datos", e);
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error en la base de datos", e);
-        }
-
-        if (admin.getNombre() == "" | admin.getNombre() == null) {
-            String error = "Usuario o contraseña incorrecto";
-            request.getSession().setAttribute("error", error);
-            response.sendRedirect("login.jsp");
+            if (admin.getNombre() == "" | admin.getNombre() == null) {
+                String error = "Usuario o contraseña incorrecto";
+                request.getSession().setAttribute("error", error);
+                response.sendRedirect("login.jsp");
+            } else {
+                request.getSession().setAttribute("usuario", admin.getUsuario());
+                request.getSession().setMaxInactiveInterval(1800);
+                response.sendRedirect("paginaAdministracion.jsp");
+            }
         } else {
-            request.getSession().setAttribute("usuario", admin.getUsuario());
-            request.getSession().setMaxInactiveInterval(1800);
-            response.sendRedirect("paginaAdministracion.jsp");
+            request.getSession().invalidate();
+            String confirmacion = "Se ha cerrado la sesión";
+            request.getSession().setAttribute("confirmacion", confirmacion);
+            response.sendRedirect("index.jsp");
         }
     }
 

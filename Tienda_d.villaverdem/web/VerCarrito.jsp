@@ -17,7 +17,7 @@
     </head>
     <body>
         <div id="contenedor">
-            <div id="menuBasico">
+            <div class="menuBasico">
                 <a href="index.jsp">Volver</a>
             </div>
 

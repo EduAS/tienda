@@ -24,18 +24,29 @@
         %>
         <c:if test="<%= request.getSession().getAttribute("confirmacion") != null%>">
             <script>alert("<%=request.getSession().getAttribute("confirmacion")%>");</script>
-            <% request.getSession().setAttribute("confirmacion", null); %>
-            
+            <% request.getSession().setAttribute("confirmacion", null);%>
+
         </c:if>
 
-        
+
         <div id="contenedor">
             <div id='cabecera'>
                 En 'ca' Paqui
             </div>
 
-            <div id='menuBasico'>
-                <a href="login.jsp">Identificarse</a>
+            <div class='menuBasico'>
+                <c:choose>
+                    <c:when test="<%= request.getSession().getAttribute("usuario") != null%>">
+                        <a href="login.jsp">Administrar</a>
+                        <% String user = (String) request.getSession().getAttribute("usuario");%>                              
+                        <label>Usuario: <%=user%></label>
+                        <a class="boton" id="cerrarSesion" href="ServletLogin?login=false">Cerrar sesión</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="login.jsp">Identificarse</a>
+                    </c:otherwise>
+                </c:choose>
+
             </div>
 
 
@@ -52,9 +63,9 @@
 
                     <li>
                         <form name="formPrecio" method='get' action='ServletProductos' onSubmit="return validarPrecio();">
-                            <label>Min</label> 
+                            <label>Desde</label> 
                             <input type='text' size="5" name='precioMin' value="0" onkeypress="soloCaracterPrecioValido()" />
-                            <label>Max</label> 
+                            <label>Hasta</label> 
                             <input type='text' size="5" name='precioMax' value="0" onkeypress="soloCaracterPrecioValido()" />
                             <input type='hidden' name='busqueda' value='precio' />
                             <input type='submit' name='BuscarPrecio' value='Buscar'>
@@ -155,7 +166,7 @@
                         <% request.getSession().setAttribute("lista", null);%>
                     </c:when>
                     <c:otherwise>
-                        Busque los productos por categoría, nombre o precio en el menú superior                    
+                        Busque los productos por categoría, nombre o precio en el menú superior. Si dejas el campo "nombre" en blanco saldrá toda la lista de productos                   
                     </c:otherwise>   
                 </c:choose>
 

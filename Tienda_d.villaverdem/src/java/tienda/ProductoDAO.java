@@ -56,6 +56,59 @@ public class ProductoDAO {
         return getProductosPedidoQuery("Pedido = '" + numero + "'");
     }
 
+    public String modificarProducto(String nombreProd, String atributo, String nuevoValor) {
+        String where = "WHERE Nombre='" + nombreProd + "'";
+        if ("nombre".equals(atributo)) {
+            String set = "SET Nombre='" + nuevoValor + "' ";
+            String sql = "UPDATE PRODUCTO " + set + where;
+            return modificarProductoQuery(sql);
+        } else {
+            if ("precio".equals(atributo)) {
+                String set = "SET Precio=" + nuevoValor + " ";
+                String sql = "UPDATE PRODUCTO " + set + where;
+                return modificarProductoQuery(sql);
+            } else {
+                if ("categoria".equals(atributo)) {
+                    String set = "SET Categoria='" + nuevoValor + "' ";
+                    String sql = "UPDATE PRODUCTO " + set + where;
+                    return modificarProductoQuery(sql);
+                } else {
+                    if ("imagen".equals(atributo)) {
+                        String set = "SET Imagen='" + nuevoValor + "' ";
+                        String sql = "UPDATE PRODUCTO " + set + where;
+                        return modificarProductoQuery(sql);
+                    } else {
+                        if ("eliminar".equals(atributo)) {
+                            String sql = "DELETE FROM PRODUCTO " + where;
+                            return modificarProductoQuery(sql);
+                        }
+                    }
+                }
+            }
+        }
+        return "Algo falló";
+    }
+
+    public String modificarProductoQuery(String sql) {
+        Statement stm = null;
+        String modificado = "Algo falló";
+        try {
+            stm = this.conn.createStatement();
+            stm.executeUpdate(sql);
+            modificado = "Se ha modificado el producto";
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+        return modificado;
+    }
+
     public void crearPedido(String nombreCliente, String numPedido) {
         Statement stm = null;
         try {
@@ -95,7 +148,7 @@ public class ProductoDAO {
 
     public ArrayList<Pedido> getPedido(String where) {
         ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
-        Statement stm = null; 
+        Statement stm = null;
         try {
             stm = this.conn.createStatement();
             String sql = "SELECT * FROM Pedido " + where;

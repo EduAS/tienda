@@ -8,14 +8,28 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″>
         <title>Página de Administración</title>
         <link rel="stylesheet" type="text/css" href="estilo.css"/>
+        <script src="funciones.js"></script>
+
     </head>
     <body>
+        <c:if  test="<%= request.getSession().getAttribute("usuario") == null%>">  
+
+            <%
+                String error = "Debe loguearse como administrador para ver esta página";
+                request.getSession().setAttribute("error", error);
+                response.sendRedirect("login.jsp");
+            %>
+        </c:if>
         <div id="contenedor">
             <div id="pedidos">
-                <a href="ServletGestionarPedidos?gestionPedidos=ver">Ver pedidos pendientes de preparación</a>    
+                <div class="menuBasico">
+                    <a class="boton" href="ServletGestionarPedidos?gestionPedidos=ver">Ver pedidos pendientes de preparación</a> 
+                    <a class="boton" href="index.jsp">Volver</a>   
+                    <a class="boton" id="cerrarSesion" href="ServletLogin?login=false">Cerrar sesión</a>
+                </div>
                 <div id="divPedidosSinPreparar">
                     <c:if test="<%= request.getSession().getAttribute("pedidosSinPreparar") != null%>">
                         <%
@@ -118,7 +132,12 @@
                                                     <input type="submit" name="modificar" value="Modificar">
                                                 </form>
                                             </td>  
-                                            <td></td>
+                                            <td>
+                                                <form method="get" action="ServletEliminarModificarProducto" onSubmit="return confirmar('¿Está seguro de que desea eliminar este producto?')">
+                                                    <input type="hidden" name="nombreProd" value="${prod.getNombre()}"/>
+                                                    <input type="submit" name="modificar" value="Eliminar">
+                                                </form>
+                                            </td>
                                         </tr>
 
 
@@ -128,47 +147,52 @@
                                 <% request.getSession().setAttribute("lista", null);%>
                             </c:when>
                             <c:otherwise>
-                                Busca el producto a modificar o eliminar
+                                Busca el producto a modificar o eliminar. Si dejas el campo en blanco saldrá toda la lista de productos
                             </c:otherwise>   
                         </c:choose>
                     </div>
 
                     <c:if test="<%= request.getParameter("modificar") != null%>">
+                        <%String nombreProd = request.getParameter("nombreProd");%>
                         <div id="divModificar">
                             <table>
                                 <tr>
-                                    <td>Modificar <c:out value="${prod.getNombre()}"/></td>
+                                    <td>Modificar <%=nombreProd%></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <form method="post" action="ServletEliminarModificarProducto">
                                             <label>Modificar nombre</label><br/>
-                                            <input type="text" name="nombre"/><br/>
-                                            <input type="submit" name="modificarNombre" value="modificarNombre"/>
+                                            <input type="text" name="nombreNuevo"/><br/>
+                                            <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
+                                            <input type="submit" name="modificar" value="modificarNombre"/>
                                         </form>
                                     </td>
                                     <td>
-                                        <form method="post" action="ServletEliminarModificarProducto">
+                                        <form method="post" action="ServletEliminarModificarProducto" onSubmit="return validarPrecio();">
                                             <label>Modificar precio</label><br/>
-                                            <input type="text" name="precio"/><br/>
-                                            <input type="submit" name="modificarPrecio" value="modificarPrecio"/>
+                                            <input type="text" name="precioNuevo" onkeypress="soloCaracterPrecioValido()"/><br/>
+                                            <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
+                                            <input type="submit" name="modificar" value="modificarPrecio"/>
                                         </form>
                                     </td>
                                     <td>
                                         <form method="post" action="ServletEliminarModificarProducto">
                                             <label>Modificar categoria</label><br/>
-                                            <input type="radio" name="categoria" value="Alim"/>Alimentación<br/>
-                                            <input type="radio" name="categoria" value="Ferret"/>Ferretería<br/>
-                                            <input type="radio" name="categoria" value="Drog"/>Droguería<br/>
-                                            <input type="radio" name="categoria" value="Pren"/>Prensa<br/>                                     
-                                            <input type="submit" name="modificarCategoria" value="modificarCategoria"/>
+                                            <input type="radio" name="categoriaNueva" value="Alimentación"/>Alimentación<br/>
+                                            <input type="radio" name="categoriaNueva" value="Ferretería"/>Ferretería<br/>
+                                            <input type="radio" name="categoriaNueva" value="Droguería"/>Droguería<br/>
+                                            <input type="radio" name="categoriaNueva" value="Prensa"/>Prensa<br/>   
+                                            <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
+                                            <input type="submit" name="modificar" value="modificarCategoria"/>
                                         </form>
                                     </td>   
                                     <td>
                                         <form method="post" enctype="multipart/form-data" action="">
                                             <label>Modificar imagen</label><br/>
-                                            <input type="file" name="imagen"/><br/>
-                                            <input type="submit" name="modificarImagen" value="modificarImagen"/>
+                                            <input type="file" name="imagenNueva"/><br/>
+                                            <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
+                                            <input type="submit" name="modificar" value="modificarImagen"/>
                                         </form>
                                     </td>
                                 </tr>

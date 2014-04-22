@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/media/eduas/Compartida/NetBeansProject/Tienda_d.villaverdem/src/java/tienda/ServletGestionarPedidos.java</file>
-            <file>file:/media/eduas/Compartida/NetBeansProject/Tienda_d.villaverdem/web/paginaAdministracion.jsp</file>
-            <file>file:/media/eduas/Compartida/NetBeansProject/Tienda_d.villaverdem/src/java/tienda/ProductoDAO.java</file>
-            <file>file:/media/eduas/Compartida/NetBeansProject/Tienda_d.villaverdem/web/estilo.css</file>
-            <file>file:/media/eduas/Compartida/NetBeansProject/Tienda_d.villaverdem/web/index.jsp</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/web/index.jsp</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/src/java/tienda/ServletProductos.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/src/java/tienda/ProductoDAO.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/src/java/tienda/ServletLogin.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/web/login.jsp</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/web/paginaAdministracion.jsp</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/Tienda_d.villaverdem/web/funciones.js</file>
         </group>
     </open-files>
 </project-private>

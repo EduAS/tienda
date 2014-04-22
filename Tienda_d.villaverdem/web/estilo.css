@@ -18,10 +18,15 @@
     text-align:center;
 }
 
-#menuBasico{
+.menuBasico{
     height: 34px;
     background-color: #e6e6e6;
     padding: 17px 36px 0px 16px;
+}
+.menuBasico label{
+    position:relative;
+    float: right;
+    margin-right: 15px;
 }
 
 
@@ -103,16 +108,23 @@
     padding:10px;
 }
 
-#pedidos a{
+.boton{
     text-decoration: none;
     background-color: #cedddf;
     border:2px #666666 solid;
     padding:4px;
 }
 
-#pedidos a:hover{
+.boton:hover{
     background-color: #7798ab;
     border:3px #272727 solid;
+}
+
+
+#cerrarSesion{
+    position:relative;
+    float: right;
+    margin-right: 5px;
 }
 
 #pedidos table{

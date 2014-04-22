@@ -10,7 +10,17 @@
         <script src="funciones.js"></script>
     </head>
     <body>
-        <form name="formLog"  method="POST" action="ServletLogin" onSubmit="return validar_camposLogin()">
+
+        <c:if  test="<%= request.getSession().getAttribute("usuario") != null%>">   
+            <% response.sendRedirect("paginaAdministracion.jsp");%>
+        </c:if>
+
+        <c:if test="<%= request.getSession().getAttribute("error") != null%>">   
+            <script>alert('<%= session.getAttribute("error")%>');</script>
+            <% session.setAttribute("error", null);%>
+        </c:if>
+
+        <form name="formLog"  method="POST" action="ServletLogin?login=true" onSubmit="return validar_camposLogin()">
             <table align="center" width="200px">
                 <tr>
                     <td colspan="2" align="center"><h3>Iniciar sesi&oacute;n</h3></td>
@@ -36,15 +46,9 @@
                     </td>
 
                 </tr>
+                <tr><td><a class="boton" href="index.jsp">Volver</a> </td></tr>
             </table>
         </form>
-
-        
-        <c:if test="<%= session.getAttribute("error")!=null%>">   
-            <script>alert('<%= session.getAttribute("error")%>');</script>
-            <% session.setAttribute("error", null);%>
-        </c:if>
-
 
     </body>
 </html>
