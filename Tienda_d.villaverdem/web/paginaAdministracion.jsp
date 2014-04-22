@@ -28,7 +28,7 @@
                 <div class="menuBasico">
                     <a class="boton" href="ServletGestionarPedidos?gestionPedidos=ver">Ver pedidos pendientes de preparación</a> 
                     <a class="boton" href="index.jsp">Volver</a>   
-                    <a class="boton" id="cerrarSesion" href="ServletLogin?login=false">Cerrar sesión</a>
+                    <a class="boton" href="ServletLogin?login=false">Cerrar sesión</a>
                 </div>
                 <div id="divPedidosSinPreparar">
                     <c:if test="<%= request.getSession().getAttribute("pedidosSinPreparar") != null%>">
@@ -38,7 +38,7 @@
                             request.getSession().setAttribute("pedidosPreparar", pedidosSinPreparar);
                         %>
 
-                        <table>
+                        <table class="tabla">
                             <tr>
                                 <td><b>Número</b></td>
                                 <td><b>Usuario</b></td>
@@ -80,8 +80,36 @@
             </div>
 
             <div id="productos">
-                <div id="agregarProducto">
 
+                <div id="agregarProducto">
+                    <div class="menuBasico"><a class="boton" href="paginaAdministracion.jsp?agregar=true">Añadir nuevo producto</a></div>
+                    <c:if test="<%= request.getParameter("agregar") != null%>">
+                        <table class='tabla '>
+                            <tr><td colspan="4"><h4>Añadir nuevo Producto</h4><td></tr>
+                            <tr>
+                            <tr>
+                                <td>Nombre del Producto</td>
+                                <td>Precio</td>
+                                <td>Categoria</td>
+                                <td>Imagen</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                            <form name="formNombreAdmin" method='post' action='ServletGestionarProductos' onsubmit="return validarProducto();">
+                                <td><input type='text' name='nombreProd'/></td>
+                                <td><input type='text' name='precio' onkeypress="soloCaracterPrecioValido()"/></td>
+                                <td>
+                                    <input type="radio" name="categoria" value="Alimentación"/>Alimentación<br/>
+                                    <input type="radio" name="categoria" value="Ferretería"/>Ferretería<br/>
+                                    <input type="radio" name="categoria" value="Droguería"/>Droguería<br/>
+                                    <input type="radio" name="categoria" value="Prensa"/>Prensa<br/>   
+                                </td>
+                                <td><input type='text' name='imagen' /></td>
+                                <td><input type='submit' name='modificar' value='Agregar'></td>
+                            </form>  
+                            </tr>
+                        </table>
+                    </c:if>
                 </div>
 
                 <div id="modificarProductos">
@@ -99,6 +127,7 @@
                             </li>
                         </ul>
                     </div>
+
                     <div id="muestraProductos">
                         <c:choose>  
                             <c:when test="<%= request.getSession().getAttribute("lista") != null%>">
@@ -133,7 +162,7 @@
                                                 </form>
                                             </td>  
                                             <td>
-                                                <form method="get" action="ServletEliminarModificarProducto" onSubmit="return confirmar('¿Está seguro de que desea eliminar este producto?')">
+                                                <form method="get" action="ServletGestionarProductos" onSubmit="return confirmar('¿Está seguro de que desea eliminar este producto?')">
                                                     <input type="hidden" name="nombreProd" value="${prod.getNombre()}"/>
                                                     <input type="submit" name="modificar" value="Eliminar">
                                                 </form>
@@ -155,13 +184,13 @@
                     <c:if test="<%= request.getParameter("modificar") != null%>">
                         <%String nombreProd = request.getParameter("nombreProd");%>
                         <div id="divModificar">
-                            <table>
+                            <table class="tabla">
                                 <tr>
-                                    <td>Modificar <%=nombreProd%></td>
+                                    <td colspan="4"><h4>Modificar <%=nombreProd%></h4></td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <form method="post" action="ServletEliminarModificarProducto">
+                                        <form method="post" action="ServletGestionarProductos">
                                             <label>Modificar nombre</label><br/>
                                             <input type="text" name="nombreNuevo"/><br/>
                                             <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
@@ -169,7 +198,7 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <form method="post" action="ServletEliminarModificarProducto" onSubmit="return validarPrecio();">
+                                        <form method="post" action="ServletGestionarProductos" onSubmit="return validarPrecio();">
                                             <label>Modificar precio</label><br/>
                                             <input type="text" name="precioNuevo" onkeypress="soloCaracterPrecioValido()"/><br/>
                                             <input type="hidden" name="nombreProd" value="<%=nombreProd%>"/>
@@ -177,7 +206,7 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <form method="post" action="ServletEliminarModificarProducto">
+                                        <form method="post" action="ServletGestionarProductos">
                                             <label>Modificar categoria</label><br/>
                                             <input type="radio" name="categoriaNueva" value="Alimentación"/>Alimentación<br/>
                                             <input type="radio" name="categoriaNueva" value="Ferretería"/>Ferretería<br/>

@@ -56,6 +56,28 @@ public class ProductoDAO {
         return getProductosPedidoQuery("Pedido = '" + numero + "'");
     }
 
+    public String agregarProducto(String nombre, String precio, String categoria, String imagen) {
+        Statement stm = null;
+        String agregado = "Algo falló";
+        try {
+            stm = this.conn.createStatement();
+            String sql="INSERT INTO PRODUCTO VALUES ('"+nombre+"','"+categoria+"','"+imagen+"',"+precio+")";
+            stm.executeUpdate(sql);
+            agregado = "Se ha añadido el producto";
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al realizar la consulta", e);
+        } finally {
+            try {
+                stm.close();
+            } catch (SQLException e) {
+                System.err.println("Error al realizar la consulta: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+
+        return agregado;
+    }
+
     public String modificarProducto(String nombreProd, String atributo, String nuevoValor) {
         String where = "WHERE Nombre='" + nombreProd + "'";
         if ("nombre".equals(atributo)) {

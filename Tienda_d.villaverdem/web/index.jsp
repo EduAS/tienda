@@ -37,13 +37,13 @@
             <div class='menuBasico'>
                 <c:choose>
                     <c:when test="<%= request.getSession().getAttribute("usuario") != null%>">
-                        <a href="login.jsp">Administrar</a>
-                        <% String user = (String) request.getSession().getAttribute("usuario");%>                              
+                        <a class="boton" href="login.jsp">Administrar</a>
+                        <% String user = (String) request.getSession().getAttribute("usuario");%>                         
+                        <a class="boton" href="ServletLogin?login=false">Cerrar sesión</a>
                         <label>Usuario: <%=user%></label>
-                        <a class="boton" id="cerrarSesion" href="ServletLogin?login=false">Cerrar sesión</a>
                     </c:when>
                     <c:otherwise>
-                        <a href="login.jsp">Identificarse</a>
+                        <a class="boton" href="login.jsp">Identificarse</a>
                     </c:otherwise>
                 </c:choose>
 
@@ -62,7 +62,7 @@
                     </li>
 
                     <li>
-                        <form name="formPrecio" method='get' action='ServletProductos' onSubmit="return validarPrecio();">
+                        <form name="formPrecio" method='get' action='ServletProductos'>
                             <label>Desde</label> 
                             <input type='text' size="5" name='precioMin' value="0" onkeypress="soloCaracterPrecioValido()" />
                             <label>Hasta</label> 

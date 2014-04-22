@@ -1,14 +1,4 @@
 
-function tieneComa(texto) {
-    coma = ",";
-    texto = texto.toLowerCase();
-    for (i = 0; i < texto.length; i++) {
-        if (coma.indexOf(texto.charAt(i), 0) !== -1) {
-            return 1;
-        }
-    }
-    return 0;
-}
 
 
 function soloCaracterPrecioValido() {
@@ -19,16 +9,6 @@ function soloCaracterPrecioValido() {
 function validarCantidad() {
     if ((event.keyCode < 48) || (event.keyCode > 57))
         event.returnValue = false;
-}
-
-function validarPrecio() {
-    if (tieneComa(document.formPrecio.precioMin.value) || tieneComa(document.formPrecio.precioMax.value)) {
-        alert("El precio con céntimos debe separarse con un punto (.) no con  una coma (,)");
-        return false;
-    }
-    else {
-        document.formPrecio.submit();
-    }
 }
 
 
@@ -62,6 +42,31 @@ function validarUsuario(precio) {
     else {
         return false;
     }
+
+}
+
+function validarProducto() {
+    if (document.formNombreAdmin.nombreProd.value == "") {
+        alert("Por favor, introduzca el nombre");
+        document.formNombreAdmin.nombreProd.focus();
+        return false;
+    }
+    if (document.formNombreAdmin.precio.value == "") {
+        alert("Por favor, introduzca el precio");
+        document.formNombreAdmin.precio.focus();
+        return false;
+    }
+    if (document.formNombreAdmin.categoria.value == "") {
+        alert("Por favor, seleccione una categoría");
+        document.formNombreAdmin.categoria.focus();
+        return false;
+    }
+    if (document.formNombreAdmin.imagen.value == "") {
+        alert("Por favor, introduzca una imagen");
+        document.formNombreAdmin.imagen.focus();
+        return false;
+    }
+    document.formNombreAdmin.submit();
 
 }
 

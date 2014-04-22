@@ -29,11 +29,14 @@
     margin-right: 15px;
 }
 
+.menuBasico a{
+    margin-right: 20px;
+}
+
 
 #menu{
     border: 1px #cccccc solid;
     background-color: #fff4bf;
-    position:relative;
     height: 30px;
 }
 
@@ -120,25 +123,27 @@
     border:3px #272727 solid;
 }
 
-
-#cerrarSesion{
-    position:relative;
-    float: right;
-    margin-right: 5px;
-}
-
-#pedidos table{
+.tabla{
     border-collapse: collapse;
+    margin: 10px 0px 10px 0px;
 }
 
-#pedidos td{
-    padding: 16px;
+.tabla td{
+    padding: 15px;
 }
 
-#pedidos tr{
+.tabla tr{
     border: 2px #999 solid;
+}
+
+.tabla input{
+    margin-top:10px;
 }
 
 #divPedidosSinPreparar{
     padding:20px 0px 20px 100px;  
+}
+
+#agregarProducto {
+    padding: 15px;
 }
