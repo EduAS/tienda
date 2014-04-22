@@ -20,6 +20,7 @@ public class ServletProductos extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
         ProductoDAO prodDAO = new ProductoDAO(ds);
         try {
             if ("precio".equals(request.getParameter("busqueda"))) {
@@ -42,7 +43,7 @@ public class ServletProductos extends HttpServlet {
             prodDAO.close();
         }
         request.getSession().setAttribute("lista", productosListados);
-        if ("si".equals(request.getParameter("esAdmin"))){
+        if ("si".equals(request.getParameter("esAdmin"))) {
             response.sendRedirect("paginaAdministracion.jsp");
         } else {
             response.sendRedirect("index.jsp");

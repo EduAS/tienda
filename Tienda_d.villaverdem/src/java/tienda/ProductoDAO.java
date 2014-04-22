@@ -45,7 +45,7 @@ public class ProductoDAO {
     }
 
     public ArrayList<Producto> getProductosCategoría(String categoria) {
-        return getProductosQuery("upper(Categoria) LIKE upper('" + categoria + "%')");
+        return getProductosQuery("upper(Categoria) = upper('" + categoria + "')");
     }
 
     public ArrayList<Producto> getTodosProductos() {

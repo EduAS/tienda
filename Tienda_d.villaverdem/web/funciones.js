@@ -46,27 +46,26 @@ function validarUsuario(precio) {
 }
 
 function validarProducto() {
-    if (document.formNombreAdmin.nombreProd.value == "") {
+    if (document.formAgregar.nombreProd.value == "") {
         alert("Por favor, introduzca el nombre");
-        document.formNombreAdmin.nombreProd.focus();
+        document.formAgregar.nombreProd.focus();
         return false;
     }
-    if (document.formNombreAdmin.precio.value == "") {
+    if (document.formAgregar.precio.value == "") {
         alert("Por favor, introduzca el precio");
-        document.formNombreAdmin.precio.focus();
+        document.formAgregar.precio.focus();
         return false;
     }
-    if (document.formNombreAdmin.categoria.value == "") {
+    if (document.formAgregar.categoria.value == "") {
         alert("Por favor, seleccione una categoría");
-        document.formNombreAdmin.categoria.focus();
         return false;
     }
-    if (document.formNombreAdmin.imagen.value == "") {
+    if (document.formAgregar.imagen.value == "") {
         alert("Por favor, introduzca una imagen");
-        document.formNombreAdmin.imagen.focus();
+        document.formAgregar.imagen.focus();
         return false;
     }
-    document.formNombreAdmin.submit();
+    document.formAgregar.submit();
 
 }
 

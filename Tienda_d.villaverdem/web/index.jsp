@@ -10,7 +10,7 @@
 <html>
     <head>
         <title>En 'ca' Paqui</title>
-        <meta charset="UTF-8">
+        <meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″>
         <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" type="text/css" href="estilo.css"/>
         <script src="funciones.js"></script>
@@ -54,10 +54,10 @@
                 <ul>
                     <li id='categorias'>Categorías
                         <ul>
-                            <li><a href="ServletProductos?busqueda=categoria&cat=Alimen">Alimentación</a></li>
-                            <li><a href="ServletProductos?busqueda=categoria&cat=Drog">Droguería</a></li>
-                            <li><a href="ServletProductos?busqueda=categoria&cat=Pren">Prensa</a></li>
-                            <li><a href="ServletProductos?busqueda=categoria&cat=Ferr">Ferretería</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Alimentación">Alimentación</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Droguería">Droguería</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Prensa">Prensa</a></li>
+                            <li><a href="ServletProductos?busqueda=categoria&cat=Ferretería">Ferretería</a></li>
                         </ul>                    
                     </li>
 

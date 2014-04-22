@@ -95,7 +95,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                            <form name="formNombreAdmin" method='post' action='ServletGestionarProductos' onsubmit="return validarProducto();">
+                            <form name="formAgregar" method='post' action='ServletGestionarProductos' onSubmit="return validarProducto();">
                                 <td><input type='text' name='nombreProd'/></td>
                                 <td><input type='text' name='precio' onkeypress="soloCaracterPrecioValido()"/></td>
                                 <td>
