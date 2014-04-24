@@ -95,7 +95,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                            <form name="formAgregar" method='post' action='ServletGestionarProductos' onSubmit="return validarProducto();">
+                            <form name="formAgregar" method='post' action='ServletGestionarProductos' enctype="multipart/form-data" onSubmit="return validarProducto();">
                                 <td><input type='text' name='nombreProd'/></td>
                                 <td><input type='text' name='precio' onkeypress="soloCaracterPrecioValido()"/></td>
                                 <td>
@@ -104,7 +104,7 @@
                                     <input type="radio" name="categoria" value="Droguería"/>Droguería<br/>
                                     <input type="radio" name="categoria" value="Prensa"/>Prensa<br/>   
                                 </td>
-                                <td><input type='text' name='imagen' /></td>
+                                <td><input type='file' name='imagen' /></td>
                                 <td><input type='submit' name='modificar' value='Agregar'></td>
                             </form>  
                             </tr>
