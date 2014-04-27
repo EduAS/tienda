@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″>
         <title>Gestión de la compra</title>
         <link rel="stylesheet" type="text/css" href="estilo.css"/>
         <script src="funciones.js"></script>
@@ -22,14 +22,10 @@
             </div>
 
             <div id="muestraProductos">
-                <% ArrayList<CantidadProducto> carro = (ArrayList) session.getAttribute("carro");%>
+                <c:set var="carro" value="${carro}"/>
                 <c:choose>  
-                    <c:when test="<%= carro != null && carro.size() > 0%>">
-                        <%
-                            ArrayList<CantidadProducto> productosListados = carro;
-                        %>
-
-
+                    <c:when test="${carro != null && carro.size() > 0}">
+                        <c:set var="productosListados" value="${carro}" />
                         <table>
                             <tr>
                                 <td><b>Producto</b></td>
@@ -38,8 +34,7 @@
                             </tr>
 
                             <c:set var="total" value="0"/>
-                            <c:forEach var="prod" items="<%=productosListados%>" varStatus="status">
-                               
+                            <c:forEach var="prod" items="${productosListados}" varStatus="status">
                                 <c:set var="total" value="${prod.calcularPrecio(total)}"/>
                                 <tr>
                                     <td><c:out value="${prod.getNombre()}"/></td>

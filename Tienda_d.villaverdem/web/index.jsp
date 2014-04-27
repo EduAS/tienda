@@ -16,31 +16,29 @@
         <script src="funciones.js"></script>
     </head>
     <body>
-        <%
-            if (request.getSession().isNew()) {
-                request.getSession().setMaxInactiveInterval(1800);
-            }
-
-        %>
-        <c:if test="<%= request.getSession().getAttribute("confirmacion") != null%>">
-            <script>alert("<%=request.getSession().getAttribute("confirmacion")%>");</script>
-            <% request.getSession().setAttribute("confirmacion", null);%>
-
+        <c:if test="${pageContext.session.new}">
+            <c:set target="${pageContext.session}" property="maxInactiveInterval" value="1800" />
         </c:if>
+
+        <c:if test="${confirmacion!=null}">
+            <script>alert("${confirmacion}");</script>
+            <c:set var="confirmacion" value="${null}" scope="session"/>  
+        </c:if>
+
+
 
 
         <div id="contenedor">
             <div id='cabecera'>
                 En 'ca' Paqui
             </div>
-
             <div class='menuBasico'>
                 <c:choose>
-                    <c:when test="<%= request.getSession().getAttribute("usuario") != null%>">
+                    <c:when test="${usuario!= null}">
                         <a class="boton" href="login.jsp">Administrar</a>
-                        <% String user = (String) request.getSession().getAttribute("usuario");%>                         
+                        <c:set var="user" value="${usuario}" />
                         <a class="boton" href="ServletLogin?login=false">Cerrar sesión</a>
-                        <label>Usuario: <%=user%></label>
+                        <label>Usuario: <c:out value="${user}"/></label>
                     </c:when>
                     <c:otherwise>
                         <a class="boton" href="login.jsp">Identificarse</a>
@@ -92,15 +90,13 @@
 
                     <li>
                         <c:choose>  
-                            <c:when test="<%= session.getAttribute("carro") != null%>">
-                                <%
-                                    ArrayList<CantidadProducto> carro = (ArrayList) session.getAttribute("carro");
-                                    int total = 0;
-                                    for (CantidadProducto prod : carro) {
-                                        total += prod.getCantidad();
-                                    }
-                                %>
-                                (<c:out value="<%=total%>"/>)
+                            <c:when test="${carro!= null}">
+                                <c:set var="carro" value="${carro}"/>
+                                <c:set var="total" value="${0}"/>
+                                <c:forEach var="prod" items="${carro}">
+                                    <c:set var="total" value="${total+prod.cantidad}"/>
+                                </c:forEach>
+                                (<c:out value="${total}"/>)
                             </c:when>
                             <c:otherwise>
                                 (0)
@@ -117,19 +113,9 @@
 
             <div id='muestraProductos'>
                 <c:choose>  
-                    <c:when test="<%= session.getAttribute("lista") != null%>">
-                        <%
-                            ArrayList<Producto> productosListados = new ArrayList<Producto>();
-                            productosListados = (ArrayList) request.getSession().getAttribute("lista");
-
-                            /*Se envía la lista buscada en una variable
-                             para que cuando se añada el producto, la página siga
-                             mostrando la lista buscada. También para agregar
-                             el producto.
-                             */
-                            request.getSession().setAttribute("listaBusqueda", productosListados);
-                        %>
-
+                    <c:when test="${lista!= null}">
+                        <c:set var="productosListados" value="${lista}"/>
+                        <c:set var="listaBusqueda" value="${productosListados}" scope="session"/>
 
                         <table>
                             <tr>
@@ -141,7 +127,7 @@
                             </tr>
 
 
-                            <c:forEach var="prod" items="<%=productosListados%>" varStatus="status">
+                            <c:forEach var="prod" items="${productosListados}" varStatus="status">
                                 <tr>
                                     <td><c:out value="${prod.getNombre()}"/></td>
                                     <td><c:out value="${prod.formateaPrecio(prod.getPrecio())}"/></td>
@@ -162,8 +148,7 @@
 
                         </table>
 
-
-                        <% request.getSession().setAttribute("lista", null);%>
+                        <c:set var="lista" value="${null}" scope="session"/>
                     </c:when>
                     <c:otherwise>
                         Busque los productos por categoría, nombre o precio en el menú superior. Si dejas el campo "nombre" en blanco saldrá toda la lista de productos                   

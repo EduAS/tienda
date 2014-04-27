@@ -61,7 +61,7 @@ public class ProductoDAO {
         String agregado = "Algo falló";
         try {
             stm = this.conn.createStatement();
-            String sql="INSERT INTO PRODUCTO VALUES ('"+nombre+"','"+categoria+"','"+imagen+"',"+precio+")";
+            String sql = "INSERT INTO PRODUCTO VALUES ('" + nombre + "','" + categoria + "','" + imagen + "'," + precio + ")";
             stm.executeUpdate(sql);
             agregado = "Se ha añadido el producto";
         } catch (SQLException e) {
@@ -118,6 +118,9 @@ public class ProductoDAO {
             stm = this.conn.createStatement();
             stm.executeUpdate(sql);
             modificado = "Se ha modificado el producto";
+            if (sql.contains("DELETE")){
+                modificado="Se ha eliminado el producto";           
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error al realizar la consulta", e);
         } finally {
@@ -192,12 +195,14 @@ public class ProductoDAO {
 
     }
 
-    public void prepararPedido(String numPedido) {
+    public String prepararPedido(String numPedido) {
         Statement stm = null;
+        String preparado = "Algo falló";
         try {
             stm = this.conn.createStatement();
             String sql = "UPDATE PEDIDO SET Listo=true WHERE Numero='" + numPedido + "'";
             stm.executeUpdate(sql);
+            preparado = "El pedido ha sido marcado como preparado";
         } catch (SQLException e) {
             throw new RuntimeException("Error al realizar la consulta", e);
         } finally {
@@ -208,6 +213,7 @@ public class ProductoDAO {
                 e.printStackTrace();
             }
         }
+        return preparado;
 
     }
 

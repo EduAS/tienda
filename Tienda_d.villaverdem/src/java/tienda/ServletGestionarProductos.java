@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -35,15 +36,14 @@ public class ServletGestionarProductos extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, FileUploadException, Exception {
-        request.setCharacterEncoding("UTF-8");
 
+        request.setCharacterEncoding("UTF-8");
         ProductoDAO prodDAO = new ProductoDAO(ds);
         String confirmacion = null;
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
-        try {
-            if (isMultipart) {
-
+        if (isMultipart) {
+            try {
                 // Create a factory for disk-based file items
                 DiskFileItemFactory factory = new DiskFileItemFactory();
 
@@ -71,20 +71,50 @@ public class ServletGestionarProductos extends HttpServlet {
                         valor.add(value);
                     } else {
                         File file = new File(item.getName());
-                        String path = request.getServletContext().getRealPath("/recursos/imagenes/");
-                        item.write(new File(path+"\\", file.getName()));
-                        nombreArchivo="/recursos/imagenes/"+file.getName();
+                        String path = request.getServletContext().getRealPath("");
+                        if (path.contains("\\")) {
+                            path = path.replaceAll("\\\\", "/");
+                        }
+                        path = path.replaceAll("build/web", "") + "web/recursos/imagenes";
+                        item.write(new File(path + "/", file.getName()));
+                        nombreArchivo = "recursos\\imagenes\\" + file.getName();
                     }
-                }              
-                                
-                    String nombre = valor.get(0);
-                    String precio = valor.get(1);
-                    String categoria = valor.get(2);
-                    String imagen = nombreArchivo;
-                    confirmacion = prodDAO.agregarProducto(nombre, precio, categoria, imagen);
+                }
+//                 
+//                response.setContentType("text/html;charset=UTF-8");
+//                try (PrintWriter out = response.getWriter()) {
+//                    /* TODO output your page here. You may use following sample code. */
+//                    out.println("<!DOCTYPE html>");
+//                    out.println("<html>");
+//                    out.println("<head>");
+//                    out.println("<title>Servlet NewServlet</title>");
+//                    out.println("</head>");
+//                    out.println("<body>");
+//                    out.println(path);
+//                    out.println("</body>");
+//                    out.println("</html>");
+//                }
 
-            } else {
+                if (valor.contains("modificarImagen")) {
+                    String modificarNombre = "imagen";
+                    String nombreProd = valor.get(0);
+                    confirmacion = prodDAO.modificarProducto(nombreProd, modificarNombre, nombreArchivo);
+                } else {
+                    if (valor.contains("Agregar")) {
+                        String nombre = valor.get(0);
+                        String precio = valor.get(1);
+                        String categoria = valor.get(2);
+                        String imagen = nombreArchivo;
+                        confirmacion = prodDAO.agregarProducto(nombre, precio, categoria, imagen);
 
+                    }
+                }
+
+            } finally {
+                prodDAO.close();
+            }
+        } else {
+            try {
                 String nombreProd = request.getParameter("nombreProd");
                 String modificar = request.getParameter("modificar");
                 if ("modificarNombre".equals(modificar)) {
@@ -110,13 +140,14 @@ public class ServletGestionarProductos extends HttpServlet {
                         }
                     }
                 }
+            } finally {
+                prodDAO.close();
             }
-
-        } finally {
-            prodDAO.close();
         }
+
         request.getSession().setAttribute("confirmacion", confirmacion);
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("paginaAdministracion.jsp");
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -171,3 +202,4 @@ public class ServletGestionarProductos extends HttpServlet {
     }// </editor-fold>
 
 }
+//

@@ -23,16 +23,17 @@ public class ServletGestionarPedidos extends HttpServlet {
             throws ServletException, IOException {
 
         ProductoDAO prodDAO = new ProductoDAO(ds);
+        String confirmacion = null;
         try {
             if ("ver".equals(request.getParameter("gestionPedidos"))) {
-                String where="WHERE Listo=false";
+                String where = "WHERE Listo=false";
                 pedidos = prodDAO.getPedido(where);
             } else {
                 if ("preparar".equals(request.getParameter("gestionPedidos"))) {
                     pedidos = (ArrayList) request.getSession().getAttribute("pedidosPreparar");
                     int posicion = parseInt(request.getParameter("posicion"));
                     String numPed = pedidos.get(posicion).getNumero();
-                    prodDAO.prepararPedido(numPed);
+                    confirmacion=prodDAO.prepararPedido(numPed);
                     pedidos = null;
                 }
             }
@@ -40,6 +41,7 @@ public class ServletGestionarPedidos extends HttpServlet {
             prodDAO.close();
         }
         request.getSession().setAttribute("pedidosSinPreparar", pedidos);
+        request.getSession().setAttribute("confirmacion", confirmacion);
         response.sendRedirect("paginaAdministracion.jsp");
 
     }

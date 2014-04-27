@@ -23,6 +23,7 @@ public class ServletGuardarPedido extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         ArrayList<CantidadProducto> carroCompra = (ArrayList) request.getSession().getAttribute("carro");
         String nombreCliente = request.getParameter("nombreCliente");
         String numPedido = request.getSession().getId();
@@ -36,13 +37,12 @@ public class ServletGuardarPedido extends HttpServlet {
             }
             request.getSession().setAttribute("carro", null);
             request.getSession().invalidate();
-            String confirmacion="Su pedido ha sido guardado";
-            request.getSession().setAttribute("confirmacion",confirmacion);
+            String confirmacion = "Su pedido ha sido guardado";
+            request.getSession().setAttribute("confirmacion", confirmacion);
 
         } finally {
             prodDAO.close();
         }
-        
 
         response.sendRedirect("index.jsp");
     }

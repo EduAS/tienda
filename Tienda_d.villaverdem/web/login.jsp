@@ -11,19 +11,19 @@
     </head>
     <body>
 
-        <c:if  test="<%= request.getSession().getAttribute("usuario") != null%>">   
-            <% response.sendRedirect("paginaAdministracion.jsp");%>
+        <c:if  test="${usuario != null}">
+            <c:redirect url="paginaAdministracion.jsp"/>
         </c:if>
 
-        <c:if test="<%= request.getSession().getAttribute("error") != null%>">   
-            <script>alert('<%= session.getAttribute("error")%>');</script>
-            <% session.setAttribute("error", null);%>
+        <c:if test="${error != null}">   
+            <script>alert('${error}');</script>
+            <c:set var="error" value="${null}" scope="session"/>
         </c:if>
 
         <form name="formLog"  method="POST" action="ServletLogin?login=true" onSubmit="return validar_camposLogin()">
             <table align="center" width="200px">
                 <tr>
-                    <td colspan="2" align="center"><h3>Iniciar sesi&oacute;n</h3></td>
+                    <td colspan="2" align="center"><h3>Iniciar sesión</h3></td>
                 </tr>
 
                 <tr>

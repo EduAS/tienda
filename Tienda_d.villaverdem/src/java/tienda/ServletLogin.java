@@ -71,6 +71,7 @@ public class ServletLogin extends HttpServlet {
         } else {
             request.getSession().invalidate();
             String confirmacion = "Se ha cerrado la sesión";
+            request.getSession().setMaxInactiveInterval(1800);
             request.getSession().setAttribute("confirmacion", confirmacion);
             response.sendRedirect("index.jsp");
         }
