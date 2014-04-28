@@ -1,11 +1,6 @@
 package tienda;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -23,27 +18,34 @@ public class ServletGuardarPedido extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         request.setCharacterEncoding("UTF-8");
         ArrayList<CantidadProducto> carroCompra = (ArrayList) request.getSession().getAttribute("carro");
         String nombreCliente = request.getParameter("nombreCliente");
+        //El número de pedido será el id de sesión
         String numPedido = request.getSession().getId();
         ProductoDAO prodDAO = new ProductoDAO(ds);
         try {
+            //se crea el pedido con el nombre del cliente y el nº de pedido
             prodDAO.crearPedido(nombreCliente, numPedido);
+            //se crea un registro de cada producto con su cantidad su nombre y el nº de pedido al que pertenece
             for (CantidadProducto prod : carroCompra) {
                 int cantidad = prod.getCantidad();
                 String nombreProd = prod.getNombre();
                 prodDAO.crearRegistroPedidos(numPedido, nombreProd, cantidad);
             }
+            //se inicializa el carro a null
             request.getSession().setAttribute("carro", null);
+            //se cierra la sesion
             request.getSession().invalidate();
             String confirmacion = "Su pedido ha sido guardado";
+            //se guarda en la sesion la confirmación
             request.getSession().setAttribute("confirmacion", confirmacion);
 
         } finally {
             prodDAO.close();
         }
-
+        //se redirige a la página principal
         response.sendRedirect("index.jsp");
     }
 

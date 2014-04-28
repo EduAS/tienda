@@ -27,6 +27,7 @@ public class CantidadProducto extends Producto {
     }  
     
     
+    //método que va calculando el total de un pedido
     public double calcularPrecio(double total){
         return (double)total+(double)(this.getCantidad())*this.getPrecio();
     }

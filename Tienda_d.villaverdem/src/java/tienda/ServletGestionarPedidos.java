@@ -1,7 +1,6 @@
 package tienda;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import javax.annotation.Resource;
@@ -25,10 +24,12 @@ public class ServletGestionarPedidos extends HttpServlet {
         ProductoDAO prodDAO = new ProductoDAO(ds);
         String confirmacion = null;
         try {
+            //si quiere visualizar los pedidos que están sin preparar
             if ("ver".equals(request.getParameter("gestionPedidos"))) {
                 String where = "WHERE Listo=false";
                 pedidos = prodDAO.getPedido(where);
             } else {
+                //si quiere preparar un pedido
                 if ("preparar".equals(request.getParameter("gestionPedidos"))) {
                     pedidos = (ArrayList) request.getSession().getAttribute("pedidosPreparar");
                     int posicion = parseInt(request.getParameter("posicion"));
@@ -40,8 +41,11 @@ public class ServletGestionarPedidos extends HttpServlet {
         } finally {
             prodDAO.close();
         }
+        //se guarda la lista de pedidos sin preparar en la sesion
         request.getSession().setAttribute("pedidosSinPreparar", pedidos);
+        //se guarda el mensaje de confirmación en la sesion
         request.getSession().setAttribute("confirmacion", confirmacion);
+        //se redirige a la página de administración
         response.sendRedirect("paginaAdministracion.jsp");
 
     }

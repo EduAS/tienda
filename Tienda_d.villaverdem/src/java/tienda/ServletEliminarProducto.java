@@ -1,7 +1,6 @@
 package tienda;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -16,6 +15,7 @@ public class ServletEliminarProducto extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ArrayList<CantidadProducto> carroCompra = (ArrayList) request.getSession().getAttribute("carro");
+        //si quiere retirar de la cesta un producto
         if ("uno".equals(request.getParameter("eliminar"))) {
             int cantidadQuitada = parseInt(request.getParameter("cantidad"));
             int posicion = parseInt(request.getParameter("posicion"));
@@ -24,11 +24,14 @@ public class ServletEliminarProducto extends HttpServlet {
             carroCompra.get(posicion).setCantidad(cantidadNueva);
         }
         else{
+            //si quiere vaciar la cesta entera
             if("todos".equals(request.getParameter("eliminar"))){
                 carroCompra= new ArrayList<CantidadProducto>();
             }
         }
+        //se guarda en la sesion el carro actualizado
         request.getSession().setAttribute("carro", carroCompra);
+        //se redirige a la página que visualiza el carrito
         response.sendRedirect("VerCarrito.jsp");
 
     }

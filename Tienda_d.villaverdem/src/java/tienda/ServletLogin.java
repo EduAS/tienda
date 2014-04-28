@@ -21,10 +21,11 @@ public class ServletLogin extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        //si se pulsa el boton de iniciar sesion
         if ("true".equals(request.getParameter("login"))) {
             Connection conn;
             Usuario admin = new Usuario();
+            //se realiza la consulta
             try {
                 conn = ds.getConnection();
                 Statement stm = null;
@@ -58,25 +59,33 @@ public class ServletLogin extends HttpServlet {
             } catch (SQLException e) {
                 throw new RuntimeException("Error en la base de datos", e);
             }
-
+            //si el nombre de usuario no está en la BD, entonces no conecta
             if (admin.getNombre() == "" | admin.getNombre() == null) {
                 String error = "Usuario o contraseña incorrecto";
                 request.getSession().setAttribute("error", error);
                 response.sendRedirect("login.jsp");
-            } else {
+            } else { //si está en la BD
+                //se guarda el nombre de usuario en la sesión
                 request.getSession().setAttribute("usuario", admin.getUsuario());
+                //se inicializa a 30 min el tiempo maximo de sesion inactiva
                 request.getSession().setMaxInactiveInterval(1800);
+                //y se redirige a la página de administración
                 response.sendRedirect("paginaAdministracion.jsp");
             }
-        } else {
+        } else { //si se pulsa el boton que cierra la sesion
+            //cerramos la sesion
             request.getSession().invalidate();
             String confirmacion = "Se ha cerrado la sesión";
+            //la nueva sesion tendrá el maximo de tiempo inactivo 30 min
             request.getSession().setMaxInactiveInterval(1800);
+            //se guarda la confirmación en la sesion
             request.getSession().setAttribute("confirmacion", confirmacion);
+            //se redirige a la página principal
             response.sendRedirect("index.jsp");
         }
     }
 
+    //método que crea un objeto de la clase Usuario al iniciar la sesión
     private Usuario crearAdminFromRS(ResultSet rs) throws SQLException {
         Usuario admin = new Usuario();
         while (rs.next()) {

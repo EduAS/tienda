@@ -17,6 +17,7 @@ public class ProductoDAO {
         }
     }
 
+    //método que cierra la conexión si existe
     public void close() {
         if (conn != null) {
             try {
@@ -28,10 +29,12 @@ public class ProductoDAO {
         }
     }
 
+    //método que llama a getProductosQuery y le pasa la condicion WHERE que busca por nombre
     public ArrayList<Producto> getProductosNombre(String nombre) {
         return getProductosQuery("upper(Nombre) LIKE upper('%" + nombre + "%')");
     }
 
+    //método que llama a getProductosQuery y le pasa la condicion WHERE que busca por precio
     public ArrayList<Producto> getProductosPrecio(String precioMin, String precioMax) {
         if (precioMin == "" && precioMax == "") {
             return null;
@@ -44,18 +47,22 @@ public class ProductoDAO {
         }
     }
 
+    //método que llama a getProductosQuery y le pasa la condicion WHERE que busca por categoría
     public ArrayList<Producto> getProductosCategoría(String categoria) {
         return getProductosQuery("upper(Categoria) = upper('" + categoria + "')");
     }
 
+    //método que llama a getProductosQuery y no le pasa condición WHERE para que busque todos los productos
     public ArrayList<Producto> getTodosProductos() {
         return getProductosQuery(null);
     }
 
+    //método que llama a getPedidoQuery y le pasa la condicion WHERE que busca por numero de pedido
     public ArrayList<CantidadProducto> getProductosPedido(String numero) {
         return getProductosPedidoQuery("Pedido = '" + numero + "'");
     }
 
+    //método que agrega un nuevo producto a la BD y devuelve la confirmación
     public String agregarProducto(String nombre, String precio, String categoria, String imagen) {
         Statement stm = null;
         String agregado = "Algo falló";
@@ -78,6 +85,8 @@ public class ProductoDAO {
         return agregado;
     }
 
+    //método que llama a modificarProductoQuery y le pasa la condicion según el valor indicado en el parámetro "atributo"
+    //y devuelve la confirmación
     public String modificarProducto(String nombreProd, String atributo, String nuevoValor) {
         String where = "WHERE Nombre='" + nombreProd + "'";
         if ("nombre".equals(atributo)) {
@@ -111,6 +120,7 @@ public class ProductoDAO {
         return "Algo falló";
     }
 
+    //método que modifica un producto de la BD y devuelve la confirmación
     public String modificarProductoQuery(String sql) {
         Statement stm = null;
         String modificado = "Algo falló";
@@ -118,8 +128,8 @@ public class ProductoDAO {
             stm = this.conn.createStatement();
             stm.executeUpdate(sql);
             modificado = "Se ha modificado el producto";
-            if (sql.contains("DELETE")){
-                modificado="Se ha eliminado el producto";           
+            if (sql.contains("DELETE")) {
+                modificado = "Se ha eliminado el producto";
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al realizar la consulta", e);
@@ -134,6 +144,7 @@ public class ProductoDAO {
         return modificado;
     }
 
+    //método que crea un pedido en la BD
     public void crearPedido(String nombreCliente, String numPedido) {
         Statement stm = null;
         try {
@@ -153,6 +164,7 @@ public class ProductoDAO {
 
     }
 
+    //método que crea el registro de un producto pedido en la BD relacionado por el nº de pedido
     public void crearRegistroPedidos(String numPedido, String nombreProd, int cantidad) {
         Statement stm = null;
         try {
@@ -171,6 +183,7 @@ public class ProductoDAO {
         }
     }
 
+    //método que devuelve la lista de pedidos de la BD según la condición where
     public ArrayList<Pedido> getPedido(String where) {
         ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
         Statement stm = null;
@@ -195,6 +208,7 @@ public class ProductoDAO {
 
     }
 
+    //método que cambia un pedido a preparado (Listo=true) y devuelve la confirmación
     public String prepararPedido(String numPedido) {
         Statement stm = null;
         String preparado = "Algo falló";
@@ -217,6 +231,7 @@ public class ProductoDAO {
 
     }
 
+    //método que devuelve la lista de productos de la BD según la condición
     private ArrayList<Producto> getProductosQuery(String where) {
 
         ArrayList<Producto> productos = new ArrayList<Producto>();
@@ -245,6 +260,7 @@ public class ProductoDAO {
         return productos;
     }
 
+    //método que devuelve la lista de productos de un pedido de la BD según la condición
     private ArrayList<CantidadProducto> getProductosPedidoQuery(String where) {
 
         ArrayList<CantidadProducto> productos = new ArrayList<CantidadProducto>();
@@ -273,6 +289,7 @@ public class ProductoDAO {
         return productos;
     }
 
+    //método que crea una lista de productos a partir de un ResultSet
     private ArrayList<Producto> crearProductoListFromRS(ResultSet rs) throws SQLException {
         ArrayList<Producto> productos = new ArrayList<Producto>();
         while (rs.next()) {
@@ -285,6 +302,7 @@ public class ProductoDAO {
         return productos;
     }
 
+    //método que crea una lista de productos de un pedido a partir de un ResultSet
     private ArrayList<CantidadProducto> crearCantidadProductoListFromRS(ResultSet rs) throws SQLException {
         ArrayList<CantidadProducto> productos = new ArrayList<CantidadProducto>();
         while (rs.next()) {
@@ -295,6 +313,7 @@ public class ProductoDAO {
         return productos;
     }
 
+    //método que crea una lista de pedidos partir de un ResultSet
     private ArrayList<Pedido> crearPedidoListFromRS(ResultSet rs) throws SQLException {
         ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
         while (rs.next()) {

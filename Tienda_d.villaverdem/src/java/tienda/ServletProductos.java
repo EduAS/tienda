@@ -23,15 +23,18 @@ public class ServletProductos extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         ProductoDAO prodDAO = new ProductoDAO(ds);
         try {
+            //si la busqueda es por precio
             if ("precio".equals(request.getParameter("busqueda"))) {
                 String precioMinimo = request.getParameter("precioMin");
                 String precioMaximo = request.getParameter("precioMax");
                 productosListados = prodDAO.getProductosPrecio(precioMinimo, precioMaximo);
             } else {
+                //si la busqueda es por nombre
                 if ("nombre".equals(request.getParameter("busqueda"))) {
                     String nombreProducto = request.getParameter("nombreProd");
                     productosListados = prodDAO.getProductosNombre(nombreProducto);
                 } else {
+                    //si la busqueda es por categoria
                     if ("categoria".equals(request.getParameter("busqueda"))) {
                         String categ = request.getParameter("cat");
                         productosListados = prodDAO.getProductosCategoría(categ);
@@ -43,9 +46,10 @@ public class ServletProductos extends HttpServlet {
             prodDAO.close();
         }
         request.getSession().setAttribute("lista", productosListados);
+        //si existe la variable esAdmin, entonces la busqueda se ha hecho en la paginaAdministracion.jps
         if ("si".equals(request.getParameter("esAdmin"))) {
             response.sendRedirect("paginaAdministracion.jsp");
-        } else {
+        } else { //sino, pues en la página principal (index.jsp)
             response.sendRedirect("index.jsp");
         }
     }
