@@ -21,7 +21,12 @@ public class ServletEliminarProducto extends HttpServlet {
             int posicion = parseInt(request.getParameter("posicion"));
             int cantidadActual = carroCompra.get(posicion).getCantidad();
             int cantidadNueva = cantidadActual - cantidadQuitada;
+            if (cantidadNueva>0){
             carroCompra.get(posicion).setCantidad(cantidadNueva);
+            }else{
+                carroCompra.remove(posicion);
+            }
+            
         }
         else{
             //si quiere vaciar la cesta entera
